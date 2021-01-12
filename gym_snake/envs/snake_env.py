@@ -35,12 +35,15 @@ class SnakeEnv(gym.Env):
 
     def step(self, action):
         self.last_obs, rewards, done, info = self.controller.step(action)
-        return self.last_obs, rewards, done, info
+        obs = self.last_obs[0:-1:self.unit_size, 0:-1:self.unit_size]
+        return obs, rewards, done, info
 
     def reset(self):
-        self.controller = Controller(self.grid_size, self.unit_size, self.unit_gap, self.snake_size, self.n_snakes, self.n_foods, random_init=self.random_init)
+        self.controller = Controller(self.grid_size, self.unit_size, self.unit_gap,
+                                     self.snake_size, self.n_snakes, self.n_foods, random_init=self.random_init)
         self.last_obs = self.controller.grid.grid.copy()
-        return self.last_obs
+        obs = self.last_obs[0:-1:self.unit_size, 0:-1:self.unit_size]
+        return obs
 
     def render(self, mode='human', close=False, frame_speed=.1):
         if self.viewer is None:
